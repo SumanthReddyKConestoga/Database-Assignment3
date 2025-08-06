@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASS}"
+      MYSQL_DATABASE:   "${DB_NAME}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+
+volumes:
+  mysql_data:

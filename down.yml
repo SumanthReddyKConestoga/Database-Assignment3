@@ -1,15 +1,13 @@
-- name: remove mysql
+- name: Teardown MySQL + Adminer
   hosts: localhost
+  connection: local
   gather_facts: false
   tasks:
-    - name: docker compose down
-      community.docker.docker_compose_v2:
-        project_src: .
-        files:
-        - mysql-adminer.yml
+    - name: Remove Adminer
+      community.docker.docker_container:
+        name: adminer
         state: absent
-    - name: Remove mysql-client
-      ansible.builtin.package:
-        name: mysql-client
+    - name: Remove MySQL
+      community.docker.docker_container:
+        name: mysql
         state: absent
-      become: yes

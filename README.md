@@ -1,55 +1,146 @@
-# PROG8850Week1Installation
-install mysql, python
+# Database Automation Assignment 3
 
-```bash
-ansible-playbook up.yml
+**Web Application with Database Integration & Automated Testing**
+
+---
+
+## 📌 Author
+
+**Sumanth Reddy K**
+GitHub: [SumanthReddyKConestoga](https://github.com/SumanthReddyKConestoga)
+Repository: [https://github.com/SumanthReddyKConestoga/Database-Assignment3.git](https://github.com/SumanthReddyKConestoga/Database-Assignment3.git)
+
+---
+
+## 🚀 Overview
+
+This repository embodies a forward-thinking yet tradition-honoring solution: a **Flask**‑based web application that captures user credentials, funnels them into a **MySQL** database, and validates end-to-end integrity via **Selenium** automation. It is structured to deliver maximum clarity, maintainability, and automated deliverables for enterprise-grade workflows.
+
+**Key Deliverables:**
+
+* User‑centric login form (Flask)
+* Database schema and provisioning (MySQL + Docker Compose)
+* Automated UI & data validation (Selenium)
+* Infrastructure as Code (Docker Compose)
+* Comprehensive project documentation
+
+---
+
+## 🗂️ Folder Structure
+
+```plaintext
+DATABASE-ASSIGNMENT3/
+├── .env                    # Environment variables (DB credentials)
+├── docker-compose.yml      # MySQL & Adminer orchestration
+├── schema_changes.sql      # Database schema setup
+├── app.py                  # Flask application entrypoint
+├── templates/
+│   └── login.html          # Login form template
+├── tests/
+│   └── test_login.py       # Selenium end-to-end test
+├── requirements.txt        # Python dependencies
+└── README.md               # This document
 ```
 
-To use mysql:
+---
 
-```bash
-mysql -u root -h 127.0.0.1 -p
-```
+## 🛠️ Prerequisites
 
-To run github actions like (notice that the environment variables default for the local case):
+* **Docker** & **Docker Compose**
+* **Python 3.8+**
+* **Google Chrome** & **ChromeDriver** (in PATH)
+* **Git**
 
-```yaml
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+---
 
-      - name: Install MySQL client
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
+## 🔧 Setup & Execution
 
-      - name: Deploy to Database
-        env:
-          DB_HOST: ${{ secrets.DB_HOST || '127.0.0.1' }} 
-          DB_USER: ${{ secrets.DB_ADMIN_USER || 'root' }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD  || 'Secret5555'}}
-          DB_NAME: ${{ secrets.DB_NAME || 'mysql' }}
-        run: mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < schema_changes.sql
-```
+1. **Clone the repository**
 
-locally:
+   ```bash
+   git clone https://github.com/SumanthReddyKConestoga/Database-Assignment3.git
+   cd Database-Assignment3
+   ```
 
-first try
+2. **Configure environment**
 
-```bash
-bin/act
-```
+   * Rename `.env.example` to `.env`
+   * Populate:
 
-then if that doesn't work 
+     ```dotenv
+     DB_HOST=localhost
+     DB_USER=root
+     DB_PASS=YourRootPassword
+     DB_NAME=usersdb
+     ```
 
-```bash
-bin/act -P ubuntu-latest=-self-hosted
-```
+3. **Launch infrastructure**
 
-to run in the codespace.
+   ```bash
+   docker-compose up -d
+   ```
 
-To shut down:
+4. **Initialize database schema**
 
-```bash
-ansible-playbook down.yml
-```
+   ```bash
+   mysql -u root -p$DB_PASS < schema_changes.sql
+   ```
 
-This is a reproducible mysql setup
+5. **Install Python dependencies**
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate     # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+6. **Start the Flask app**
+
+   ```bash
+   python app.py
+   ```
+
+7. **Run Selenium tests**
+
+   ```bash
+   python -m pytest tests/test_login.py
+   ```
+
+---
+
+## 💡 Theory 
+
+* **Flask** acts as the concierge, presenting a login page and routing your credentials.
+* **MySQL** is the secure filing cabinet, storing each submission with an auto‑increment ID.
+* **Docker Compose** orchestrates your database and Adminer GUI in containers—cross‑platform and dependable.
+* **Selenium** is the tireless QA robot, ensuring the UI works and the data lands exactly where it should.
+
+---
+
+## 📈 Quality Assurance & CI/CD
+
+* Integrate with GitHub Actions to automate:
+
+  * Linting & formatting
+  * Infrastructure bring-up & teardown
+  * End-to-end Selenium test execution
+  * Security scans (e.g., Dependabot, Trivy)
+
+---
+
+## 🤝 Contributing
+
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m "feat: add amazing feature"`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+---
+

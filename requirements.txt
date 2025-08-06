@@ -1,1 +1,6 @@
-flask
+Flask
+mysql-connector-python
+python-dotenv
+selenium
+ansible
+docker         # optional: only if your playbooks or code invoke the Python Docker SDK

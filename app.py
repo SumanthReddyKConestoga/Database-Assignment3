@@ -1,44 +1,45 @@
-##Flask app for testing selenium and MySQL database---Optional
-
-#app.py
-
-from flask import Flask, request, render_template_string
-import mysql.connector
 import os
+from flask import Flask, render_template, request, redirect
+import mysql.connector
+from dotenv import load_dotenv
+
+# ————— Load environment variables —————
+load_dotenv()
 
 app = Flask(__name__)
 
-# Database connection
-def get_db_connection():
+
+def get_db_conn():
     return mysql.connector.connect(
-        user= os.environ.get("DB_USER",  "root"),
-        password=os.environ.get("DB_PASSWORD", "Secret5555"),
-        host= os.environ.get("DB_HOST", "127.0.0.1"),
-        database=os.environ.get("DB_NAME", "firstdatabase")
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASS", ""),
+        database=os.getenv("DB_NAME", "usersdb")
     )
 
-# Simple login page
-@app.route('/login', methods=['GET', 'POST'])
+
+@app.route("/", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        # For demonstration, assume login is successful and insert into the database
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    if request.method == "POST":
+        u = request.form["username"]
+        p = request.form["password"]
+        conn = get_db_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO users (username, password) VALUES (%s,%s)",
+            (u, p)
+        )
         conn.commit()
-        cursor.close()
+        cur.close()
         conn.close()
-        return "Login Successful"
-    return '''
-        <form method="post">
-            username: <input type="text" name="username"><br>
-            password: <input type="password" name="password"><br>
-            <input type="submit" value="Login">
-        </form>
-    '''
+        return redirect("/success")
+    return render_template("login.html")
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
+@app.route("/success")
+def success():
+    return "✅ User recorded – database updated."
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,21 +1,25 @@
-services:
+- name: Provision MySQL + Adminer
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Launch MySQL container
+      community.docker.docker_container:
+        name: mysql
+        image: mysql:5.7
+        state: started
+        restart_policy: unless-stopped
+        env:
+          MYSQL_ROOT_PASSWORD: "{{ lookup('env','DB_PASS') }}"
+          MYSQL_DATABASE:   "{{ lookup('env','DB_NAME') }}"
+        published_ports:
+          - "3306:3306"
 
-  db:
-    image: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: Secret5555
-    # (this is just an example, not intended to be a production configuration)
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql_db_data:/var/lib/mysql
-  adminer_container:
-    image: adminer:latest
-    environment:
-      ADMINER_DEFAULT_SERVER: mysql_db_container
-    ports:
-      - 8080:8080
-
-volumes:
-  mysql_db_data:
+    - name: Launch Adminer container
+      community.docker.docker_container:
+        name: adminer
+        image: adminer:latest
+        state: started
+        restart_policy: unless-stopped
+        published_ports:
+          - "8080:8080"
